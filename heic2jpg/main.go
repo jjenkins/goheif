@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/jdeng/goheif"
 	"image/jpeg"
 	"io"
 	"log"
 	"os"
+
+	"github.com/jjenkins/goheif"
 )
 
 // Skip Writer for exif writing
@@ -26,13 +27,13 @@ func (w *writerSkipper) Write(data []byte) (int, error) {
 		return dataLen, nil
 	}
 
-	if n, err := w.w.Write(data[w.bytesToSkip:]); err == nil {
+	n, err := w.w.Write(data[w.bytesToSkip:])
+	if err == nil {
 		n += w.bytesToSkip
 		w.bytesToSkip = 0
 		return n, nil
-	} else {
-		return n, err
 	}
+	return n, err
 }
 
 func newWriterExif(w io.Writer, exif []byte) (io.Writer, error) {
@@ -77,7 +78,7 @@ func main() {
 		log.Printf("Warning: no EXIF from %s: %v\n", fin, err)
 	}
 
-	img, err := goheif.DecodeImage(fi)
+	img, err := goheif.Decode(fi)
 	if err != nil {
 		log.Fatalf("Failed to parse %s: %v\n", fin, err)
 	}

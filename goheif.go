@@ -8,8 +8,8 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/jdeng/goheif/heif"
-	"github.com/jdeng/goheif/libde265"
+	"github.com/jjenkins/goheif/heif"
+	"github.com/jjenkins/goheif/libde265"
 )
 
 // SafeEncoding uses more memory but seems to make
@@ -77,11 +77,13 @@ func decodeHevcItem(dec *libde265.Decoder, hf *heif.File, item *heif.Item) (*ima
 	return ycc, nil
 }
 
+// ExtractExif extracts the exif
 func ExtractExif(ra io.ReaderAt) ([]byte, error) {
 	hf := heif.Open(ra)
 	return hf.EXIF()
 }
 
+// Decode decodes an image.
 func Decode(r io.Reader) (image.Image, error) {
 	ra, err := asReaderAt(r)
 	if err != nil {
